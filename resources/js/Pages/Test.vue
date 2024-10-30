@@ -1,7 +1,7 @@
 <template>
     <div class="container flex my-5">
         <div class="m-auto pb-4" style="width: 500px; z-index: 999">
-            <h1 class="h5 text-center py-4 bg-primary m-0">SMPN 1 Panggul CBT</h1>
+            <h1 class="h5 text-center py-4 bg-primary m-0 text-white">SMPN 1 Panggul CBT</h1>
             <form class="p-5 pt-4 text-dark" style="background-color: rgba(255, 255, 255, 0.9);-webkit-backdrop-filter: blur(5px);backdrop-filter: blur(5px);" method="POST" action="" autocomplete="off" @submit.prevent="storeLogin">
                 <div>
                     <label class="col-form-label">NISN <span class="text-danger">*</span></label>
