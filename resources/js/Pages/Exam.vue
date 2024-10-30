@@ -1,8 +1,8 @@
 <template>
     <div class="container flex my-5">
-        <div class="m-auto pb-4" style="width: 500px; z-index: 999">
+        <div class="m-auto pb-4" style="max-width: 800px; z-index: 999">
             <div class="text-center py-4 bg-primary m-0 text-white">
-                <h1 class="h5">{{ exam?.name }}</h1>
+                <h1 class="h5">{{ exam?.name }} [ {{ (active + 1) +'/'+ (exam?.questions?.length) }} ]</h1>
                 <p class="mb-0">{{ student?.name }}</p>
             </div>
 
@@ -11,7 +11,7 @@
                     <div v-html="currentQuestion.content"></div>
 
                     <legend class="mt-4">Jawaban</legend>
-                    <div class="form-check" v-for="(soal, index) in currentQuestion.options" :key="soal">
+                    <div class="ps-5 pt-2 form-check border-bottom border-3 mb-3" style="background-color: #ddd;" v-for="(soal, index) in currentQuestion.options" :key="soal">
                         <input class="form-check-input" type="radio" :value="index" :id="`option-${index}`" v-model="currentOption">
                         <label class="form-check-label" style="cursor: pointer;" :for="`option-${index}`">
                             <span v-html="soal.value"></span>
@@ -36,20 +36,81 @@
 </template>
 
 <script setup>
-import { computed, ref, watchEffect } from 'vue';
+import { computed, onMounted, reactive, ref, watch, watchEffect } from 'vue';
+import { router, usePage } from '@inertiajs/vue3'
+import axios from 'axios'
 
+const page = usePage()
 
 const props = defineProps({
     exam: Object,
-    grade: Object
+    grade: Object,
+    currentJawabans: Object
 })
+
+let jawabans = reactive({})
 
 let active = ref(0)
 let currentQuestion = computed(() => props.exam.questions[active.value])
-let currentOption = ref(null)
-
-watchEffect(() => {
-    
+let currentOption = computed({
+    set(val){
+        jawabans[currentQuestion.value.id] = val
+    },
+    get(){
+        return jawabans[currentQuestion.value.id]
+    }
 })
 
+watch(jawabans, async (current)=>{
+
+    await axios.post('', {
+        question_id: currentQuestion.value.id,
+        answer: currentOption.value
+    }, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    })
+
+})
+
+onMounted(() => {
+    Object.assign(jawabans, props.currentJawabans)
+})
+
+
+
+// let busy = false
+// let dirty = false
+
+// onMounted(() => {
+//     setInterval(async function(){
+
+//         if(!busy && dirty)
+//         {
+//             busy = true
+
+//             await axios.post('', {
+
+//                 jawabans 
+
+//             }, {
+//                 headers: {
+//                     'Content-Type': 'multipart/form-data'
+//                 }
+//             })
+
+//             busy = false
+//             dirty = false
+//         }
+
+//     }, 5000)
+// })
 </script>
+
+<style>
+figure img{
+    width: 100% !important;
+    height: unset !important;
+}
+</style>

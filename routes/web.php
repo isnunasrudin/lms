@@ -16,5 +16,6 @@ Route::get('home', HomeController::class)->name('home');
 
 // Route::get('exam', ExamController::class)->name('exam.show');
 Route::get('exam/{exam}', [ExamController::class, 'setActive'])->name('exam.setActive');
+Route::post('exam/{exam}', [ExamController::class, 'saveJawaban']);
 
 Route::get('feb', [PercobaanController::class, 'extractTables']);
