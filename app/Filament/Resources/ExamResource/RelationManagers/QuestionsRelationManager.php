@@ -2,8 +2,11 @@
 
 namespace App\Filament\Resources\ExamResource\RelationManagers;
 
+use App\Http\Controllers\PercobaanController;
+use App\Models\Exam;
 use Filament\Forms;
 use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
@@ -14,6 +17,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Storage;
 
 class QuestionsRelationManager extends RelationManager
 {
@@ -59,6 +63,31 @@ class QuestionsRelationManager extends RelationManager
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make(),
+                Tables\Actions\Action::make('importExcel')
+                    ->label('Import Soal (DOCX)')
+                    ->color('info')
+                    ->icon('heroicon-o-arrow-up-tray')
+                    ->form([
+                        FileUpload::make('attachment')->acceptedFileTypes(['application/vnd.openxmlformats-officedocument.wordprocessingml.document']),
+                    ])
+                    ->action(function(array $data, RelationManager $livewire)
+                    {
+                        $file_path = Storage::disk('public')->path($data['attachment']);
+                        
+                        $questions = (new PercobaanController)->extractTables($file_path);
+                        foreach ($questions as $question) {
+                            $livewire->getOwnerRecord()->questions()->create([
+                                'content' => $question->content,
+                                'options' => array_map(function($a, $b) use($question) {
+                                    return [
+                                        'value' => $a,
+                                        'is_correct' => $b === $question->correct
+                                    ];
+                                }, $question->options, array_keys($question->options))
+                            ]);
+                        }
+    
+                    })
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

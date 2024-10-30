@@ -3,6 +3,7 @@
 use App\Http\Controllers\ExamController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\PercobaanController;
 use App\Http\Controllers\TestController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -15,3 +16,5 @@ Route::get('home', HomeController::class)->name('home');
 
 // Route::get('exam', ExamController::class)->name('exam.show');
 Route::get('exam/{exam}', [ExamController::class, 'setActive'])->name('exam.setActive');
+
+Route::get('feb', [PercobaanController::class, 'extractTables']);
