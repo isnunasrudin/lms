@@ -27,6 +27,7 @@ class StudentImport implements ToModel, WithStartRow
             'password' => trim($row[5]),
             'rombel_id' => Rombel::firstOrCreate([
                 'name' => trim($row[6]),
+                'level' => preg_replace("/[^0-9]/", '', $row[6]),
             ])->id
         ]);
     }
