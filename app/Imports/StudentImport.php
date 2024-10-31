@@ -2,7 +2,9 @@
 
 namespace App\Imports;
 
+use App\Models\Rombel;
 use App\Models\Student;
+use Maatwebsite\Excel\Concerns\OnEachRow;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithStartRow;
@@ -23,6 +25,9 @@ class StudentImport implements ToModel, WithStartRow
             'gender' => trim($row[3]),
             'born_date' => trim($row[4]),
             'password' => trim($row[5]),
+            'rombel_id' => Rombel::firstOrCreate([
+                'name' => trim($row[6]),
+            ])->id
         ]);
     }
 
