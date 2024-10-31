@@ -15,8 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('code');
             $table->string('name');
-            $table->timestamp('from');
-            $table->timestamp('until');
+            $table->date('date');
+            $table->time('from');
+            $table->time('until');
             $table->boolean('visible')->default(true);
 
             $table->integer('duration'); //Secound

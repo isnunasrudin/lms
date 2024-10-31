@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Grade extends Model
 {
+    use SoftDeletes;
+    
     public function questions()
     {
         return $this->belongsToMany(Question::class, 'question_grade')->withPivot('answer');

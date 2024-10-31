@@ -9,9 +9,12 @@ use App\Filament\Resources\ExamResource\RelationManagers\QuestionsRelationManage
 use App\Filament\Resources\ExamResource\RelationManagers\StudentsRelationManager;
 use App\Models\Exam;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Form;
@@ -32,13 +35,20 @@ class ExamResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('code'),
-                TextInput::make('name'),
-                DateTimePicker::make('from'),
-                DateTimePicker::make('until'),
-                TextInput::make('duration')->numeric()->suffix('menit'),
-                TextInput::make('attempt')->label('Kesempatan Mengerjakan')->suffix('kali')->numeric(),
-                Select::make('event_id')->relationship('event', 'name'),
+                Tabs::make('Tabs')->tabs([
+                    Tabs\Tab::make('Umum')->schema([
+                        Select::make('event_id')->relationship('event', 'name')->columnSpanFull(),
+                        TextInput::make('code'),
+                        TextInput::make('name'),
+                        TextInput::make('duration')->numeric()->suffix('menit'),
+                        TextInput::make('attempt')->label('Kesempatan Mengerjakan')->suffix('kali')->numeric(),
+                    ])->columns(2),
+                    Tabs\Tab::make('Waktu Pelaksanaan')->schema([
+                        DatePicker::make('date')->label('Tanggal')->columnSpanFull(1),
+                        TimePicker::make('from')->label('Dari Pukul'),
+                        TimePicker::make('until')->label('Sampai Pukul'),
+                    ])->columns(2)
+                ])->columnSpanFull()
             ]);
     }
 

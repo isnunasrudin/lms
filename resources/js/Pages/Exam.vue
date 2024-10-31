@@ -20,8 +20,15 @@
                 </div>
                 <div class="card-footer">
                     <div class="row">
-                        <div class="col">
+                        <div class="col-auto">
                             <button class="btn btn-secondary" :disabled="active <= 0" @click="active--">Kembali</button>
+                        </div>
+                        <div class="col flex">
+                            <div class="alert alert-info p-2 text-center fw-bold">
+                                <vue-countdown :time="waktu" v-slot="{ hours, minutes, seconds }">
+                                    <small>{{ hours }} jam, {{ minutes }} menit, {{ seconds }} detik.</small>
+                                </vue-countdown>
+                            </div>
                         </div>
                         <div class="col-auto">
                             <button v-if="(active + 1) < props.exam.questions.length" class="btn btn-primary" @click="active++">Selanjutnya</button>
@@ -30,7 +37,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </template>
@@ -39,6 +45,7 @@
 import { computed, onMounted, reactive, ref, watch, watchEffect } from 'vue';
 import { router, usePage } from '@inertiajs/vue3'
 import axios from 'axios'
+import moment from 'moment';
 
 const page = usePage()
 
@@ -74,6 +81,8 @@ watch(jawabans, async (current)=>{
     })
 
 })
+
+const waktu = ref(moment(props.grade.created_at).add(props.exam.duration, 'm').diff(moment()))
 
 onMounted(() => {
     Object.assign(jawabans, props.currentJawabans)

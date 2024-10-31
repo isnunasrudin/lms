@@ -12,7 +12,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->append([HandleInertiaRequests::class]);
+        $middleware->web(
+            append: [HandleInertiaRequests::class]
+        );
         $middleware->validateCsrfTokens(except: ['exam/*']);
     })
     ->withExceptions(function (Exceptions $exceptions) {

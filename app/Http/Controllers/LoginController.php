@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Student;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
 {
@@ -15,11 +16,17 @@ class LoginController extends Controller
             'password' => 'required'
         ]);
 
-        $student = Student::whereNisn($request->nisn)->wherePassword($request->password)->firstOrFail();
+        try {
+            $student = Student::whereNisn($request->nisn)->wherePassword($request->password)->firstOrFail();
 
-        Auth::guard('student')->login($student);
+            Auth::guard('student')->login($student);
 
-        return to_route('home');
+            return to_route('home');
+        } catch (\Throwable $th) {
+            throw ValidationException::withMessages([
+                'nisn' => 'NISN / Tanggal Lahir tidak valid'
+            ]);
+        }
         
     }
 

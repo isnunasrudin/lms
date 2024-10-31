@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
-import vue from '@vitejs/plugin-vue'; 
+import vue from '@vitejs/plugin-vue';
+import { fileURLToPath, URL } from "url"; 
 
 export default defineConfig({
     plugins: [
@@ -21,5 +22,6 @@ export default defineConfig({
         alias: {
             vue: 'vue/dist/vue.esm-bundler.js',
         },
+        "@": fileURLToPath(new URL('./resources/js/coreui', import.meta.url))
     },
 });

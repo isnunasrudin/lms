@@ -25,8 +25,11 @@ class StudentResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\TextInput::make('nisn'),
                 Forms\Components\TextInput::make('name'),
                 Forms\Components\Select::make('rombel_id')->label('Rombel')->relationship('rombel', 'name'),
+                Forms\Components\DatePicker::make('born_date'),
+                Forms\Components\TextInput::make('password'),
             ]);
     }
 

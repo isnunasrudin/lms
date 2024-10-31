@@ -2,7 +2,9 @@
 
 namespace App\Filament\Resources\ExamResource\RelationManagers;
 
+use App\Models\Rombel;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
@@ -37,7 +39,23 @@ class StudentsRelationManager extends RelationManager
             ])
             ->headerActions([
                 // Tables\Actions\CreateAction::make(),
-                Tables\Actions\AttachAction::make(),
+                Tables\Actions\AttachAction::make()->label('Tambah Siswa'),
+                Tables\Actions\Action::make('attach_rombel')
+                    ->label('Tambah Rombongan belajar')
+                    ->form([
+                        Select::make('rombel')
+                            ->options(Rombel::all(['name', 'id'])
+                            ->pluck('name', 'id'))
+                            ->multiple()
+                            ->searchable() 
+                    ])
+                    ->action(function(array $data, RelationManager $livewire)
+                    {
+                        $livewire->getOwnerRecord()->students()->syncWithoutDetaching(
+                            Rombel::with('students')->whereIn('id', $data['rombel'])->get()->pluck('students', 'id')->collapse()->pluck('id')
+                        );
+    
+                    })
             ])
             ->actions([
                 // Tables\Actions\EditAction::make(),
