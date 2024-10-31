@@ -7,7 +7,7 @@
             </div>
 
             <div class="card">
-                <div class="card-body">
+                <div class="card-body" id="soal">
                     <div v-html="currentQuestion.content"></div>
 
                     <legend class="mt-4">Jawaban</legend>
@@ -25,7 +25,7 @@
                         </div>
                         <div class="col-auto">
                             <button v-if="(active + 1) < props.exam.questions.length" class="btn btn-primary" @click="active++">Selanjutnya</button>
-                            <button v-else class="btn btn-success">Finish!</button>
+                            <a :href="url + '/finish'" v-else class="btn btn-success">Finish!</a>
                         </div>
                     </div>
                 </div>
@@ -49,6 +49,7 @@ const props = defineProps({
 })
 
 let jawabans = reactive({})
+let url = ref(location.href.replace(/\/$/, ''))
 
 let active = ref(0)
 let currentQuestion = computed(() => props.exam.questions[active.value])
@@ -109,7 +110,7 @@ onMounted(() => {
 </script>
 
 <style>
-figure img{
+figure img, #soal img{
     width: 100% !important;
     height: unset !important;
 }

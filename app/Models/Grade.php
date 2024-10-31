@@ -10,4 +10,14 @@ class Grade extends Model
     {
         return $this->belongsToMany(Question::class, 'question_grade')->withPivot('answer');
     }
+
+    public function exam()
+    {
+        return $this->belongsTo(Exam::class);
+    }
+
+    public function student()
+    {
+        return $this->belongsTo(Student::class);
+    }
 }

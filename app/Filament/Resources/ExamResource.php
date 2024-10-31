@@ -4,11 +4,13 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ExamResource\Pages;
 use App\Filament\Resources\ExamResource\RelationManagers;
+use App\Filament\Resources\ExamResource\RelationManagers\GradesRelationManager;
 use App\Filament\Resources\ExamResource\RelationManagers\QuestionsRelationManager;
 use App\Filament\Resources\ExamResource\RelationManagers\StudentsRelationManager;
 use App\Models\Exam;
 use Filament\Forms;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
@@ -34,7 +36,8 @@ class ExamResource extends Resource
                 TextInput::make('name'),
                 DateTimePicker::make('from'),
                 DateTimePicker::make('until'),
-                TextInput::make('duration')->numeric(),
+                TextInput::make('duration')->numeric()->suffix('menit'),
+                TextInput::make('attempt')->label('Kesempatan Mengerjakan')->suffix('kali')->numeric(),
                 Select::make('event_id')->relationship('event', 'name'),
             ]);
     }
@@ -65,7 +68,8 @@ class ExamResource extends Resource
     {
         return [
             QuestionsRelationManager::class,
-            StudentsRelationManager::class
+            StudentsRelationManager::class,
+            GradesRelationManager::class,
         ];
     }
 

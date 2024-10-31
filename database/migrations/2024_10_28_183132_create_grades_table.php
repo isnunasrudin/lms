@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('grade')->nullable();
             $table->timestamps();
 
+            $table->string('status')->default('PROGRESS');
             $table->timestamp('finished_at')->nullable();
         });
     }

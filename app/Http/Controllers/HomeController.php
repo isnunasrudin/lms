@@ -11,10 +11,15 @@ class HomeController extends Controller
     public function __invoke()
     {
         $student = Auth::guard('student')->user();
+        $grades = $student->grades()->where('status', 'FINISH')->get()->groupBy('exam_id')->map->count();
+
+        $exam = $student->exams;
 
         return Inertia::render('Home', [
             'student' => $student,
-            'exams' => $student->exams
+            'exams' => $exam->filter(function ($exam) use($grades) {
+                return $exam->attempt > ($grades[$exam->id] ?? 0);
+            })
         ]);
     }
 }

@@ -9,7 +9,7 @@
             <div class="card">
                 <div class="card-body">
                     <p>Pilihan Ujian yang Tersedia: </p>
-                    <Link as="button" :href="`/exam/${exam.id}`" class="btn btn-primary d-block text-left w-100" v-for="exam in exams" :key="exam">
+                    <Link as="button" :href="`/exam/${exam.id}`" class="btn btn-primary d-block text-left w-100 mb-1" v-for="exam in exams" :key="exam">
                         <h2 class="h5 mb-0">{{ exam.name }}</h2>
                         {{ exam.duration }} menit
                     </Link>
