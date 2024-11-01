@@ -20,7 +20,7 @@ class ExamController extends Controller
             'exam_id' => $exam->id,
         ]);
 
-        if(Session::get('exam_id') == $exam->id)
+        if(Session::get('exam_id') == $exam->id || !$exam->event->required_token)
         {
             return Inertia::render('Exam', [
                 'exam' => $exam->load('questions'),
