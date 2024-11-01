@@ -11,8 +11,8 @@
                     <input type="text" class="form-control" required="" v-model="form.nisn" placeholder="Nomor Induk Siswa Nasional">
                 </div>
                 <div>
-                    <label class="col-form-label">Tanggal Lahir <span class="text-danger">*</span></label>
-                    <input type="date" class="form-control" required="" v-model="form.password" placeholder="Masukkan Tanggal Lahir">
+                    <label class="col-form-label">Password <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" required="" v-model="form.password" placeholder="Password">
                 </div>
                 <button type="submit" class="btn btn-primary w-100 mt-4">MASUK!</button>
             </form>
