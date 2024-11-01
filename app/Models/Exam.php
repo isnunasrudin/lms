@@ -6,9 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Exam extends Model
 {
-    public $casts = [
-        'required_token' => 'boolean'
-    ];
     
     public function event()
     {

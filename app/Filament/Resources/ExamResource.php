@@ -25,6 +25,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Str;
 
 class ExamResource extends Resource
 {
@@ -45,7 +46,6 @@ class ExamResource extends Resource
                         TextInput::make('name'),
                         TextInput::make('duration')->numeric()->suffix('menit'),
                         TextInput::make('attempt')->label('Kesempatan Mengerjakan')->suffix('kali')->numeric(),
-                        Toggle::make('required_token')->label('Memerlukan Token')
                     ])->columns(2),
                     Tabs\Tab::make('Waktu Pelaksanaan')->schema([
                         DatePicker::make('date')->label('Tanggal')->columnSpanFull(1),

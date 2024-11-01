@@ -8,6 +8,7 @@ use App\Models\Event;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -15,6 +16,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Str;
 
 class EventResource extends Resource
 {
@@ -32,6 +34,8 @@ class EventResource extends Resource
                 TextInput::make('name'),
                 DatePicker::make('start_date'),
                 DatePicker::make('end_date'),
+
+                Toggle::make('required_token')->label('Memerlukan Token')
             ]);
     }
 
@@ -39,13 +43,20 @@ class EventResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')
+                TextColumn::make('name'),
+                TextColumn::make('token')
+                    ->default('-'),
             ])
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('regerate_token')->action(function(Event $record){
+                    $record->update([
+                        'token' => strtoupper(Str::random(6))
+                    ]);
+                })->visible(fn(Event $record) => $record->required_token)
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

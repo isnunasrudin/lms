@@ -7,6 +7,8 @@ use App\Models\Grade;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
 class ExamController extends Controller
@@ -18,11 +20,40 @@ class ExamController extends Controller
             'exam_id' => $exam->id,
         ]);
 
-        return Inertia::render('Exam', [
+        if(Session::get('exam_id') == $exam->id)
+        {
+            return Inertia::render('Exam', [
+                'exam' => $exam->load('questions'),
+                'grade' => $grade,
+                'currentJawabans' => $grade->questions->pluck('pivot.answer', 'id'),
+                'student' => Auth::guard('student')->user(),
+            ]);
+        }
+
+        return Inertia::render('Token', [
             'exam' => $exam->load('questions'),
             'grade' => $grade,
-            'currentJawabans' => $grade->questions->pluck('pivot.answer', 'id')
+            'currentJawabans' => $grade->questions->pluck('pivot.answer', 'id'),
+            'student' => Auth::guard('student')->user(),
         ]);
+    }
+
+    public function verifyToken(Exam $exam, Request $request)
+    {
+        $request->validate([
+            'token' => 'required'
+        ]);
+
+        if($exam->event->token != $request->get('token')) {
+            throw ValidationException::withMessages([
+                'token' => 'Token Tidak Valid!'
+            ]);
+        }
+
+        Session::put('exam_id', $exam->id);
+
+        return redirect()->back();
+
     }
 
     public function saveJawaban(Request $request, Exam $exam)
