@@ -17,6 +17,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -44,6 +45,7 @@ class ExamResource extends Resource
                         TextInput::make('name'),
                         TextInput::make('duration')->numeric()->suffix('menit'),
                         TextInput::make('attempt')->label('Kesempatan Mengerjakan')->suffix('kali')->numeric(),
+                        Toggle::make('required_token')->label('Memerlukan Token')
                     ])->columns(2),
                     Tabs\Tab::make('Waktu Pelaksanaan')->schema([
                         DatePicker::make('date')->label('Tanggal')->columnSpanFull(1),

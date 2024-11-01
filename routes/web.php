@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 
-Route::get('/', TestController::class)->middleware('guest:student');
+Route::get('/', TestController::class)->middleware('guest:student')->name('/');
 Route::post('/login', [LoginController::class, 'login']);
 
 Route::get('home', HomeController::class)->name('home');
@@ -20,3 +20,4 @@ Route::post('exam/{exam}', [ExamController::class, 'saveJawaban']);
 Route::get('exam/{exam}/finish', [ExamController::class, 'finish']);
 
 Route::get('feb', [PercobaanController::class, 'extractTables']);
+Route::get('/logout', [LoginController::class, 'logout'])->name('logout');

@@ -14,7 +14,7 @@ class HomeController extends Controller
         $student = Auth::guard('student')->user();
         $grades = $student->grades()->where('status', 'FINISH')->get()->groupBy('exam_id')->map->count();
 
-        $exam = $student->exams;
+        $exam = $student->exams()->with('event')->get();
 
         return Inertia::render('Home', [
             'student' => $student,
@@ -24,6 +24,12 @@ class HomeController extends Controller
                     $exam->percobaan < $exam->attempt &&
                     Carbon::now()->between(Carbon::parse("$exam->date $exam->from"), Carbon::parse("$exam->date $exam->until")));
                 return $exam;
+            })->filter(function($exam) {
+                return Carbon::now()
+                    ->between(
+                        Carbon::parse($exam->event->start_date . " 00:00:00"),
+                        Carbon::parse($exam->event->end_date . " 23:59:59")
+                    );
             })->toArray()
         ]);
     }
