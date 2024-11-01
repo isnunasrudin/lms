@@ -19,6 +19,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class RombelResource extends Resource
 {
     protected static ?string $model = Rombel::class;
+    protected static ?string $modelLabel = "Rombongan Belajar";
+    protected static ?string $pluralModelLabel = "Rombongan Belajar";
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 

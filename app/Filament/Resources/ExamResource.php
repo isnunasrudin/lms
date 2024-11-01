@@ -28,8 +28,10 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class ExamResource extends Resource
 {
     protected static ?string $model = Exam::class;
+    protected static ?string $modelLabel = "Mata Pelajaran";
+    protected static ?string $pluralModelLabel = "Mata Pelajaran";
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
 
     public static function form(Form $form): Form
     {
