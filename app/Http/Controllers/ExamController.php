@@ -14,11 +14,14 @@ use Inertia\Inertia;
 class ExamController extends Controller
 {
 
-    public function setActive(Exam $exam)
+    public function setActive(Exam $exam, Request $request)
     {
         $grade = Auth::guard('student')->user()->grades()->where('status', 'PROGRESS')->firstOrCreate([
             'exam_id' => $exam->id,
         ]);
+
+        if($this->expired($grade))
+            return $this->finish($request, $exam);
 
         if(Session::get('exam_id') == $exam->id || !$exam->event->required_token)
         {
@@ -60,6 +63,9 @@ class ExamController extends Controller
     {
         $grade = Auth::guard('student')->user()->grades()->where('status', 'PROGRESS')->where('exam_id', $exam->id)->firstOrFail();
 
+        if($this->expired($grade))
+            return $this->finish($request, $exam);
+
         $grade->questions()->syncWithoutDetaching([
             $request->question_id => ['answer' => $request->answer]
         ]);
@@ -98,5 +104,16 @@ class ExamController extends Controller
         }
 
         return redirect()->route('home');
+    }
+
+    private function expired(Grade $grade) : bool
+    {
+        $exam = $grade->exam;
+        if( Carbon::now()->lte(Carbon::parse($grade->created_at)->addMinutes($exam->duration)) )
+        {
+            return false;
+        }
+
+        return true;
     }
 }
