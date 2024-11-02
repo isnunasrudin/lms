@@ -11,13 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('questions', function (Blueprint $table) {
-            $table->id();
-            $table->text('content');
-            $table->jsonb('options');
-            $table->timestamps();
-
-            $table->foreignId('exam_id')->constrained();
+        Schema::table('questions', function (Blueprint $table) {
+            $table->json('options')->change();
         });
     }
 
@@ -26,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('questions');
+        Schema::table('questions', function (Blueprint $table) {
+            $table->jsonb('options')->change();
+        });
     }
 };
