@@ -47,13 +47,13 @@ class PercobaanController extends Controller
         $soal = array_shift($rows);
         $soal = $this->rowExtract($soal);
         $current->id = (int) preg_replace("/[^0-9]/", '', $soal[0]);
-        $current->content = $soal[1];
+        $current->content = mb_convert_encoding($soal[1], "UTF-8");
 
         //JAWABAN
         foreach($rows as $indexJawaban => $row)
         {
             $currentJawaban = $this->rowExtract($row);
-            $current->options[] = $currentJawaban[1];
+            $current->options[] = mb_convert_encoding($currentJawaban[1], "UTF-8");
 
             if(strpos($currentJawaban[0], '*'))
             {
