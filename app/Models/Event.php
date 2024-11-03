@@ -3,10 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
 class Event extends Model
 {
+    use SoftDeletes;
+    
     public $casts = [
         'required_token' => 'boolean'
     ];

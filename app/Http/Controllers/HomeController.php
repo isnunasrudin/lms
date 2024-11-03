@@ -14,21 +14,20 @@ class HomeController extends Controller
         $student = Auth::guard('student')->user();
         $grades = $student->grades()->where('status', 'FINISH')->get()->groupBy('exam_id')->map->count();
 
-        $exam = $student->exams()->with('event')->get();
+        $exam = $student->exams()->with('event')->whereHas('event')->get();
 
         return Inertia::render('Home', [
             'student' => $student,
-            'exams' => $exam->map(function ($exam) use($grades) {
-                $exam->percobaan = $grades[$exam->id] ?? 0;
-                $exam->enable = (
-                    $exam->percobaan < $exam->attempt &&
-                    Carbon::now()->between(Carbon::parse("$exam->date $exam->from"), Carbon::parse("$exam->date $exam->until")));
-                return $exam;
-            })->filter(function($exam) {
-                return Carbon::now()
-                    ->between(
-                        Carbon::parse($exam->event->start_date . " 00:00:00"),
-                        Carbon::parse($exam->event->end_date . " 23:59:59")
+            'exams' => $exam->map(function ($ujian) use($grades) {
+                $ujian->percobaan = $grades[$ujian->id] ?? 0;
+                $ujian->enable = (
+                    $ujian->percobaan < $ujian->attempt &&
+                    Carbon::now()->between(Carbon::parse("$ujian->date $ujian->from"), Carbon::parse("$ujian->date $ujian->until")));
+                return $ujian;
+            })->filter(function($ujian) {
+                return Carbon::now()->between(
+                        Carbon::parse($ujian->event->start_date . " 00:00:00"),
+                        Carbon::parse($ujian->event->end_date . " 23:59:59")
                     );
             })->toArray()
         ]);
