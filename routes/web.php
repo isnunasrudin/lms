@@ -33,6 +33,6 @@ Route::middleware('auth:student')->group(function(){
     Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 });
 
-// Route::get('/re', function(){
-//     return Excel::download(new ExamNilaiExport(Exam::find(1)), 'a.xlsx');
-// });
+Route::get('/re', function(){
+    dd(Carbon::now(), phpinfo());
+});
