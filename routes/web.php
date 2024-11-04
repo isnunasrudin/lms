@@ -17,6 +17,8 @@ Route::get('/', TestController::class)->middleware('guest:student')->name('/');
 Route::get('/login', fn() => redirect('/'))->name('login'); 
 Route::post('/login', [LoginController::class, 'login']);
 
+Route::get('rekap/{exam}', RekapController::class)->name('rekap');
+
 Route::middleware('auth:student')->group(function(){
     Route::get('home', HomeController::class)->name('home');
 
@@ -29,8 +31,6 @@ Route::middleware('auth:student')->group(function(){
 
     Route::get('feb', [PercobaanController::class, 'extractTables']);
     Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
-
-    Route::get('rekap/{exam}', RekapController::class)->name('rekap');
 });
 
 // Route::get('/re', function(){
