@@ -69,23 +69,27 @@ let currentOption = computed({
     }
 })
 
-watch(jawabans, async (current)=>{
-
-    await axios.post('', {
-        question_id: currentQuestion.value.id,
-        answer: currentOption.value
-    }, {
-        headers: {
-            'Content-Type': 'multipart/form-data'
-        }
-    })
-
-})
-
 const waktu = ref(moment(props.grade.created_at).add(props.exam.duration, 'm').diff(moment()))
 
 onMounted(() => {
     Object.assign(jawabans, props.currentJawabans)
+
+    watch(jawabans, async (current)=>{
+
+        try {
+            await axios.post('', {
+                question_id: currentQuestion.value.id,
+                answer: currentOption.value
+            }, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+        } catch (error) {
+            location.href = ""
+        }
+
+    })
 })
 
 

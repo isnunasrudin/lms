@@ -61,6 +61,11 @@ class ExamController extends Controller
 
     public function saveJawaban(Request $request, Exam $exam)
     {
+        $request->validate([
+            'answer' => 'required',
+            'email' => 'required|email'
+        ]);
+
         $grade = Auth::guard('student')->user()->grades()->where('status', 'PROGRESS')->where('exam_id', $exam->id)->firstOrFail();
 
         if($this->expired($grade))
