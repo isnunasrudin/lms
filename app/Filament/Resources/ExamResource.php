@@ -72,6 +72,8 @@ class ExamResource extends Resource
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\Action::make('Rekap Nilai')->url(fn (Exam $exam) => route('rekap', $exam->id))
                     ->openUrlInNewTab()
+                    ->color('success')
+                    ->icon('heroicon-o-arrow-down-tray')
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
