@@ -6,7 +6,9 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class GradesRelationManager extends RelationManager
 {
@@ -32,7 +34,10 @@ class GradesRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('grade')->label('Nilai')->sortable(),
             ])
             ->filters([
-                //
+                SelectFilter::make('status')->options([
+                    'FINISH' => 'FINISH',
+                    'PROGRESS' => 'PROGRESS'
+                ])
             ])
             ->headerActions([
                 // Tables\Actions\CreateAction::make(),
