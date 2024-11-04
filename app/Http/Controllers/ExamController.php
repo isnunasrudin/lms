@@ -63,7 +63,6 @@ class ExamController extends Controller
     {
         $request->validate([
             'answer' => 'required',
-            'email' => 'required|email'
         ]);
 
         $grade = Auth::guard('student')->user()->grades()->where('status', 'PROGRESS')->where('exam_id', $exam->id)->firstOrFail();
