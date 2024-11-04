@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\StudentResource\Pages;
+use App\Filament\Resources\StudentResource\RelationManagers\GradesRelationManager;
 use App\Models\Student;
 use Filament\Actions\Action;
 use Filament\Forms;
@@ -36,7 +37,8 @@ class StudentResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')->searchable(),
+                TextColumn::make('name')->searchable()->sortable(),
+                TextColumn::make('grades_count')->counts('grades')->sortable(),
                 TextColumn::make('rombel.name')->searchable(),
             ])
             ->filters([
@@ -50,13 +52,14 @@ class StudentResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->defaultSort('name');
     }
 
     public static function getRelations(): array
     {
         return [
-            //
+            GradesRelationManager::class
         ];
     }
 
