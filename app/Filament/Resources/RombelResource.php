@@ -29,7 +29,11 @@ class RombelResource extends Resource
         return $form
             ->schema([
                 TextInput::make('name'),
-                Select::make('level')->label('Tingkat Kelas')->options([7,8,9])
+                Select::make('level')->label('Tingkat Kelas')->options([
+                    7 => 7,
+                    8 => 8,
+                    9 => 9,
+                ])
             ]);
     }
 
