@@ -26,8 +26,8 @@ class HomeController extends Controller
                 return $ujian;
             })->filter(function($ujian) {
                 return Carbon::now()->between(
-                        Carbon::parse($ujian->event->start_date . " 00:00:00"),
-                        Carbon::parse($ujian->event->end_date . " 23:59:59")
+                        Carbon::parse($ujian->date . " 00:00:00"),
+                        Carbon::parse($ujian->date . " 23:59:59")
                     );
             })->toArray()
         ]);
