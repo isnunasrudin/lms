@@ -29,7 +29,7 @@ class HomeController extends Controller
                         Carbon::parse($ujian->date . " 00:00:00"),
                         Carbon::parse($ujian->date . " 23:59:59")
                     );
-            })->toArray()
+            })->values()->toArray()
         ]);
     }
 }
