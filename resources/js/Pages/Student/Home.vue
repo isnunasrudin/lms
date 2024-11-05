@@ -2,7 +2,7 @@
     <Card class="overflow-hidden">
         <template #header>
             <div class="justify-center flex bg-cover bg-[url('/resources/images/bg.jpg')] px-3 py-5">
-                <div class="mx-5 my-auto">
+                <div class="mx-5 my-auto text-white">
                     <p class="font-bold text-3xl">Daftar Tes Tersedia</p>
                 </div>
             </div>

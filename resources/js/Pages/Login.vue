@@ -6,7 +6,7 @@
                     <template #header>
                         <div class="justify-center flex bg-cover bg-[url('/resources/images/bg.jpg')] px-3 py-5">
                             <img src="../../images/logo.png" alt="Logo SMPN 1 Panggul" class="h-20">
-                            <div class="mx-5 my-auto">
+                            <div class="mx-5 my-auto text-white">
                                 <p class="font-bold mb-1 text-xs">Learning Management System</p>
                                 <p class="font-bold text-xl">SMPN 1 PANGGUL</p>
                             </div>

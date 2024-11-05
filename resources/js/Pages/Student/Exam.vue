@@ -5,7 +5,7 @@
                 <OverlayBadge :value="exam.questions.length" severity="secondary" class="inline-flex">
                     <Avatar :label="`${active + 1}`" size="xlarge" />
                 </OverlayBadge>
-                <div class="ml-8 mr-3 my-auto">
+                <div class="ml-8 mr-3 my-auto text-white">
                     <p class="font-bold text-xl">{{ exam.name }}</p>
                 </div>
             </div>
