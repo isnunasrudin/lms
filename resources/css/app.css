@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html{
+  font-family: "Inter", sans-serif;
+  background: url("../images/body.webp");
+  background-size: cover;
+  background-position: center;
+}
+

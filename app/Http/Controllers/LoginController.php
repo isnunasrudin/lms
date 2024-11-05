@@ -6,9 +6,15 @@ use App\Models\Student;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use Inertia\Inertia;
 
 class LoginController extends Controller
 {
+    public function __invoke()
+    {
+        return Inertia::render("Login");
+    }
+
     public function login(Request $request)
     {
         $request->validate([
@@ -24,7 +30,7 @@ class LoginController extends Controller
             return to_route('home');
         } catch (\Throwable $th) {
             throw ValidationException::withMessages([
-                'nisn' => 'NISN / Tanggal Lahir tidak valid'
+                'nisn' => 'NISN / Kata Sandi tidak valid'
             ]);
         }
         

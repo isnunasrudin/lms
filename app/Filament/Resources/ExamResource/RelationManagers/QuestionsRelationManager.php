@@ -11,10 +11,13 @@ use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 
 class QuestionsRelationManager extends RelationManager
 {
@@ -65,23 +68,36 @@ class QuestionsRelationManager extends RelationManager
                     ->color('info')
                     ->icon('heroicon-o-arrow-up-tray')
                     ->form([
-                        FileUpload::make('attachment')->acceptedFileTypes(['application/vnd.openxmlformats-officedocument.wordprocessingml.document']),
+                        FileUpload::make('attachment'),
                     ])
                     ->action(function(array $data, RelationManager $livewire)
                     {
                         $file_path = Storage::disk('public')->path($data['attachment']);
                         
-                        $questions = (new PercobaanController)->extractTables($file_path);
-                        foreach ($questions as $question) {
-                            $livewire->getOwnerRecord()->questions()->create([
-                                'content' => $question->content,
-                                'options' => array_map(function($a, $b) use($question) {
-                                    return [
-                                        'value' => $a,
-                                        'is_correct' => $b === $question->correct
-                                    ];
-                                }, $question->options, array_keys($question->options))
-                            ]);
+                        try {
+                            DB::beginTransaction();
+                            $questions = (new PercobaanController)->extractTables($file_path);
+                            foreach ($questions as $question) {
+                                $livewire->getOwnerRecord()->questions()->create([
+                                    'content' => $question->content,
+                                    'options' => array_map(function($a, $b) use($question) {
+                                        return [
+                                            'value' => $a,
+                                            'is_correct' => $b === $question->correct
+                                        ];
+                                    }, $question->options, array_keys($question->options))
+                                ]);
+                            }
+                            DB::commit();
+                        } catch (\Throwable $th) {
+
+
+                            Notification::make()
+                                ->title('Kesalahan Import')
+                                ->body('Hai Bos')
+                                ->success()
+                                ->send();
+
                         }
     
                     })

@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
@@ -16,28 +17,25 @@ class ExamController extends Controller
 
     public function setActive(Exam $exam, Request $request)
     {
-        $grade = Auth::guard('student')->user()->grades()->where('status', 'PROGRESS')->firstOrCreate([
-            'exam_id' => $exam->id,
-        ]);
-
-        if($this->expired($grade))
-            return $this->finish($request, $exam);
 
         if(Session::get('exam_id') == $exam->id || !$exam->event->required_token)
         {
-            return Inertia::render('Exam', [
+            $grade = Auth::guard('student')->user()->grades()->where('status', 'PROGRESS')->firstOrCreate([
+                'exam_id' => $exam->id,
+            ]);
+    
+            if($this->expired($grade))
+                return $this->finish($request, $exam);
+
+            return Inertia::render('Student/Exam', [
                 'exam' => $exam->load('questions'),
                 'grade' => $grade,
                 'currentJawabans' => $grade->questions->pluck('pivot.answer', 'id'),
-                'student' => Auth::guard('student')->user(),
             ]);
         }
 
-        return Inertia::render('Token', [
-            'exam' => $exam->load('questions'),
-            'grade' => $grade,
-            'currentJawabans' => $grade->questions->pluck('pivot.answer', 'id'),
-            'student' => Auth::guard('student')->user(),
+        return Inertia::render('Student/Token', [
+            'exam' => $exam,
         ]);
     }
 
@@ -55,14 +53,16 @@ class ExamController extends Controller
 
         Session::put('exam_id', $exam->id);
 
-        return redirect()->back();
+        return $this->setActive($exam, $request);
 
     }
 
     public function saveJawaban(Request $request, Exam $exam)
     {
         $request->validate([
-            'answer' => 'required',
+            'data' => 'required|array',
+            'data.*.question_id' => ['required', Rule::exists('questions', 'id')->where('exam_id', $exam->id)],
+            'data.*.answer' => 'required|numeric',
         ]);
 
         $grade = Auth::guard('student')->user()->grades()->where('status', 'PROGRESS')->where('exam_id', $exam->id)->firstOrFail();
@@ -70,9 +70,12 @@ class ExamController extends Controller
         if($this->expired($grade))
             return $this->finish($request, $exam);
 
-        $grade->questions()->syncWithoutDetaching([
-            $request->question_id => ['answer' => $request->answer]
-        ]);
+        
+        $grade->questions()->syncWithoutDetaching(collect($request->get('data'))->mapWithKeys(function($data){
+            return [
+                $data['question_id'] => ['answer' => $data['answer']]
+            ];
+        })->toArray());
 
         $this->hitung($grade);
 

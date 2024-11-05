@@ -14,7 +14,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Route;
 use Maatwebsite\Excel\Facades\Excel;
 
-Route::get('/', TestController::class)->middleware('guest:student')->name('/');
+Route::get('/', LoginController::class)->middleware('guest:student')->name('/');
 Route::get('/login', fn() => redirect('/'))->name('login'); 
 Route::post('/login', [LoginController::class, 'login']);
 

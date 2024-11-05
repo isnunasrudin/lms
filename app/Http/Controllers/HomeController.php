@@ -16,8 +16,7 @@ class HomeController extends Controller
 
         $exam = $student->exams()->with('event')->whereHas('event')->get();
 
-        return Inertia::render('Home', [
-            'student' => $student,
+        return Inertia::render('Student/Home', [
             'exams' => $exam->map(function ($ujian) use($grades) {
                 $ujian->percobaan = $grades[$ujian->id] ?? 0;
                 $ujian->enable = (
