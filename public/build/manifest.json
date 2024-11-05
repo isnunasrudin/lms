@@ -20,7 +20,7 @@
     "src": "node_modules/primeicons/fonts/primeicons.woff2"
   },
   "resources/css/app.css": {
-    "file": "assets/app-CoDMObcz.css",
+    "file": "assets/app-BQjB7AhA.css",
     "src": "resources/css/app.css",
     "isEntry": true
   },
@@ -28,16 +28,16 @@
     "file": "assets/bg-B0EwuijG.jpg",
     "src": "resources/images/bg.jpg"
   },
-  "resources/images/body.webp": {
-    "file": "assets/body-BzSjthh1.webp",
-    "src": "resources/images/body.webp"
+  "resources/images/bg.webp": {
+    "file": "assets/bg-Cy9_l1aU.webp",
+    "src": "resources/images/bg.webp"
   },
   "resources/images/logo.png": {
     "file": "assets/logo-4-imVP3s.png",
     "src": "resources/images/logo.png"
   },
   "resources/js/app.js": {
-    "file": "assets/app-BYJndiTB.js",
+    "file": "assets/app-Bl5_sRit.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,

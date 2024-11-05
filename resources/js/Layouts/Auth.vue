@@ -13,9 +13,9 @@
             <Button label="Keluar" severity="contrast" icon="pi pi-sign-out" />
         </Link>
     </div>
-    <div class="flex h-screen w-screen backdrop-blur-sm">
+    <div class="flex h-screen w-screen ">
         <div class="m-auto">
-            <div class="w-[650px] max-w-[100vw] overflow-hidden my-32">
+            <div class="w-[400px] max-w-[100vw] overflow-hidden my-32 px-1">
                 <slot />
             </div>
         </div>

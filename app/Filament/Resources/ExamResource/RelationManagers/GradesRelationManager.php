@@ -29,7 +29,7 @@ class GradesRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('student.name')
             ->columns([
-                Tables\Columns\TextColumn::make('student.name'),
+                Tables\Columns\TextColumn::make('student.name')->searchable(),
                 Tables\Columns\TextColumn::make('status'),
                 Tables\Columns\TextColumn::make('grade')->label('Nilai')->sortable(),
             ])
