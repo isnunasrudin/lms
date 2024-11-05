@@ -18,8 +18,17 @@ class ExamController extends Controller
     public function setActive(Exam $exam, Request $request)
     {
 
+        if(!(
+            Carbon::now()->between(Carbon::parse("$exam->date $exam->from"), Carbon::parse("$exam->date $exam->until")) &&
+            Auth::guard('student')->user()->grades()->where('status', 'FINISH')->where('exam_id', $exam->id)->count() < $exam->attempt
+        ))
+        {
+            return redirect()->route('home');
+        }
+
         if(Session::get('exam_id') == $exam->id || !$exam->event->required_token)
         {
+
             $grade = Auth::guard('student')->user()->grades()->where('status', 'PROGRESS')->firstOrCreate([
                 'exam_id' => $exam->id,
             ]);
@@ -97,8 +106,23 @@ class ExamController extends Controller
 
     public function finish(Request $request, Exam $exam)
     {
+
         try {
+
+            $request->validate([
+                'data' => 'array',
+                'data.*.question_id' => ['required', Rule::exists('questions', 'id')->where('exam_id', $exam->id)],
+                'data.*.answer' => 'required|numeric',
+            ]);
+
             $grade = Auth::guard('student')->user()->grades()->where('status', 'PROGRESS')->where('exam_id', $exam->id)->firstOrFail();
+        
+            if($request->exists('data'))
+                $grade->questions()->syncWithoutDetaching(collect($request->get('data'))->mapWithKeys(function($data){
+                    return [
+                        $data['question_id'] => ['answer' => $data['answer']]
+                    ];
+                }));
 
             $this->hitung($grade);
 
@@ -106,17 +130,18 @@ class ExamController extends Controller
                 'status' => 'FINISH',
                 'finished_at' => Carbon::now()
             ]);
+
         } catch (\Throwable $th) {
             
         }
 
-        return redirect()->route('home');
+        return $request->expectsJson() ? response()->noContent(403) : redirect()->route('home');
     }
 
     private function expired(Grade $grade) : bool
     {
         $exam = $grade->exam;
-        if( Carbon::now()->lte(Carbon::parse($grade->created_at)->addMinutes($exam->duration)) )
+        if( Carbon::now()->lte(Carbon::parse($grade->created_at)->addMinutes($exam->duration)->addSeconds(3)) )
         {
             return false;
         }

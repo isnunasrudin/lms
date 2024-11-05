@@ -28,7 +28,7 @@ Route::middleware('auth:student')->group(function(){
     Route::put('exam/{exam}', [ExamController::class, 'verifyToken']);
 
     Route::post('exam/{exam}', [ExamController::class, 'saveJawaban']);
-    Route::get('exam/{exam}/finish', [ExamController::class, 'finish']);
+    Route::post('exam/{exam}/finish', [ExamController::class, 'finish']);
 
     Route::get('feb', [PercobaanController::class, 'extractTables']);
     Route::get('/logout', [LoginController::class, 'logout'])->name('logout');

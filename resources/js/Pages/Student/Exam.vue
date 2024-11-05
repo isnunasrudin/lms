@@ -58,6 +58,7 @@
         </template>
 
         <template #footer>
+
             <div class="grid grid-cols-2 gap-4 mt-5">
                 <Button label="Sebelumnya" severity="secondary" outlined class="w-full" @click="backSoal" :disabled="active == 0" />
 
@@ -65,7 +66,7 @@
                 <Button v-else
                     label="Simpan!"
                     class="w-full"
-                    @click="nextSoal"
+                    @click="finish"
                     severity="danger"
                     :disabled="exam.questions.length != Object.keys(jawabans).length"
                     />
@@ -76,6 +77,7 @@
 
 <script setup>
 import { computed, onMounted, reactive, ref } from 'vue';
+import { router } from '@inertiajs/vue3'
 import moment from 'moment';
 import axios from 'axios';
 
@@ -122,13 +124,36 @@ async function nextSoal()
     active.value++
 }
 
+async function finish()
+{
+    let data = Object.keys(jawabans).map((key) => ({
+            question_id: key,
+            answer: jawabans[key]
+        }));
+
+    try {
+        await axios.post(window.location.toString().replace(/\/?$/, '/') + "finish", {
+            data
+        }, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+    } catch (error) {
+        
+    }
+    
+    router.visit('/home')
+
+}
+
 //Time
 const waktu = ref(moment(props.grade.created_at).add(props.exam.duration, 'm').diff(moment()))
 
 onMounted(() => {
 
     let busy = false
-    setInterval(async () => {
+    let reupdate = setInterval(async () => {
         try {
             if(!busy && antrian.value.length > 0)
             {
@@ -148,6 +173,17 @@ onMounted(() => {
         } catch (error) {
             location.href = ""
         }
+    }, 1000)
+
+    let timewatch = setInterval(async() => {
+
+        if(!moment().isSameOrBefore(moment(props.grade.created_at).add(props.exam.duration, 'm')))
+        {
+            clearInterval(reupdate)
+            clearInterval(timewatch)
+            await finish()   
+        }
+
     }, 1000)
 
 })
