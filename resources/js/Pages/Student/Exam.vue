@@ -1,5 +1,5 @@
 <template>
-    <Card class="overflow-hidden">
+    <Card class="overflow-hidden" v-if="exam.questions.length > 0">
         <template #header>
             <div class="flex bg-cover bg-[url('/resources/images/bg.jpg')] p-5">
                 <OverlayBadge :value="exam.questions.length" severity="secondary" class="inline-flex">
@@ -12,7 +12,7 @@
         </template> 
         <template #content>
 
-            <Dialog v-model:visible="questionListDialog" modal header="Daftar Soal" :style="{ width: '25rem' }">
+            <Dialog v-model:visible="questionListDialog" modal header="Daftar Pertanyaan" :style="{ width: '25rem' }">
 
                 <div class="grid grid-cols-5 gap-4">
                     <Button :label="(index + 1)"
@@ -33,7 +33,7 @@
                         {{ String(hours).padStart(2, "0") }}:{{ String(minutes).padStart(2, "0") }}:{{ String(seconds).padStart(2, "0") }}
                     </vue-countdown>
                 </Message>
-                <Button severity="info" label="Lihat Daftar Soal" size="small" class="ml-auto" icon="pi pi-list" @click="questionListDialog = true" />
+                <Button severity="info" label="Daftar Pertanyaan" size="small" class="ml-auto" icon="pi pi-list" @click="questionListDialog = true" />
             </div>
 
             <div id="soal">
@@ -73,6 +73,7 @@
             </div>
         </template>
     </Card>
+    <div v-else class="text-center">Soal Tidak Tersedia</div>
 </template>
 
 <script setup>

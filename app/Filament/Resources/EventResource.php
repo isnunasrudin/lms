@@ -45,6 +45,8 @@ class EventResource extends Resource
             ->columns([
                 TextColumn::make('name'),
                 TextColumn::make('token')
+                    ->icon('heroicon-o-clipboard-document-list')
+                    ->copyable()
                     ->default('-'),
             ])
             ->filters([

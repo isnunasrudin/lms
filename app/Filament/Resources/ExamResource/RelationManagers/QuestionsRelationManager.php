@@ -75,31 +75,32 @@ class QuestionsRelationManager extends RelationManager
                         $file_path = Storage::disk('public')->path($data['attachment']);
                         
                         try {
-                            DB::beginTransaction();
-                            $questions = (new PercobaanController)->extractTables($file_path);
-                            foreach ($questions as $question) {
-                                $livewire->getOwnerRecord()->questions()->create([
-                                    'content' => $question->content,
-                                    'options' => array_map(function($a, $b) use($question) {
-                                        return [
-                                            'value' => $a,
-                                            'is_correct' => $b === $question->correct
-                                        ];
-                                    }, $question->options, array_keys($question->options))
-                                ]);
-                            }
-                            DB::commit();
+                            DB::transaction(function () use ($file_path, $livewire) {
+
+                                $questions = (new PercobaanController)->extractTables($file_path);
+                                foreach ($questions as $question) {
+                                    $livewire->getOwnerRecord()->questions()->create([
+                                        'content' => $question->content,
+                                        'options' => array_map(function($a, $b) use($question) {
+                                            return [
+                                                'value' => $a,
+                                                'is_correct' => $b === $question->correct
+                                            ];
+                                        }, $question->options, array_keys($question->options))
+                                    ]);
+                                }
+    
+                            });
                         } catch (\Throwable $th) {
 
-
-                            Notification::make()
+                            Notification::make("import_question")
                                 ->title('Kesalahan Import')
-                                ->body('Hai Bos')
-                                ->success()
+                                ->body($th->getMessage())
+                                ->danger()
                                 ->send();
 
                         }
-    
+
                     })
             ])
             ->actions([
