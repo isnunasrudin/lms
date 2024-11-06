@@ -12,6 +12,10 @@
         </template> 
         <template #content>
 
+            <Dialog v-model:visible="block_display" modal :closable="false" :draggable="false" header="Anda Tidak Fokus" :style="{ width: '25rem' }" pt:mask:class="backdrop-blur-sm">
+                <span class="text-surface-500 dark:text-surface-400 block">Silahkan kembali ke Ujian.</span>
+            </Dialog>
+
             <Dialog v-model:visible="questionListDialog" modal header="Daftar Pertanyaan" :style="{ width: '25rem' }">
 
                 <div class="grid grid-cols-5 gap-4">
@@ -71,16 +75,22 @@
                     :disabled="exam.questions.length != Object.keys(jawabans).length"
                     />
             </div>
+
+            <div class="bg-red-800 text-xs mt-2 rounded py-1 px-2 font-bold text-center text-white" v-if="exam.event.enable_ban">Fitur Deteksi Kecurangan Aktif</div>
         </template>
     </Card>
     <div v-else class="text-center">Soal Tidak Tersedia</div>
 </template>
 
 <script setup>
-import { computed, onMounted, reactive, ref } from 'vue';
+import { computed, onMounted, reactive, ref, watch } from 'vue';
 import { router } from '@inertiajs/vue3'
 import moment from 'moment';
 import axios from 'axios';
+import { useWindowFocus } from '@vueuse/core';
+
+const focused = useWindowFocus()
+const block_display = computed(() => false)
 
 const questionListDialog = ref(false)
 function questionListDialogSelect(index)
@@ -174,7 +184,7 @@ onMounted(() => {
         } catch (error) {
             location.href = ""
         }
-    }, 1000)
+    }, 5000)
 
     let timewatch = setInterval(async() => {
 
@@ -182,16 +192,30 @@ onMounted(() => {
         {
             clearInterval(reupdate)
             clearInterval(timewatch)
-            await finish()   
+            await finish()
         }
 
     }, 1000)
+
+    watch(focused, (val) => {
+
+    })
 
 })
 
 </script>
 
 <style lang="scss">
+@media print {
+    html, body{
+        display: none;
+    }
+}
+
+* {
+    user-select: none;
+}
+
 figure img, #soal img{
     width: 100% !important;
     height: unset !important;

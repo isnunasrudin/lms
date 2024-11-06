@@ -11,12 +11,18 @@ class Event extends Model
     use SoftDeletes;
     
     public $casts = [
-        'required_token' => 'boolean'
+        'required_token' => 'boolean',
+        'required_seb' => 'boolean'
     ];
 
     public function exams()
     {
         return $this->hasMany(Exam::class);
+    }
+
+    public function bans()
+    {
+        return $this->hasMany(Ban::class);
     }
 
     protected static function boot()

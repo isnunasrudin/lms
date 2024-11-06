@@ -8,6 +8,7 @@ import Button from "primevue/button"
 import Layout from "./Layouts/Auth.vue"
 
 import 'primeicons/primeicons.css'
+import { Tooltip } from 'primevue';
 
 createInertiaApp({
   resolve: name => {
@@ -26,6 +27,7 @@ createInertiaApp({
       })
       .use(plugin)
       .component(VueCountDown.name, VueCountDown)
+      .directive('tooltip', Tooltip)
 
       .mount(el)
   },

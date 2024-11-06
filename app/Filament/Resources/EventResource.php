@@ -4,9 +4,12 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\EventResource\Pages;
 use App\Filament\Resources\EventResource\RelationManagers;
+use App\Filament\Resources\EventResource\RelationManagers\BansRelationManager;
 use App\Models\Event;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
@@ -35,11 +38,15 @@ class EventResource extends Resource
                 DatePicker::make('start_date'),
                 DatePicker::make('end_date'),
 
-                Toggle::make('required_token')->label('Memerlukan Token')
+                Section::make('Keamanan')->schema([
+                    Toggle::make('required_token')->label('Memerlukan Token'),
+                    Toggle::make('enable_ban')->label('Aktifkan Banned Otomatis'),
+                    Toggle::make('required_seb')->label('Paksa Menggunakan Exam Browser')->hint('User Agent: SEB, cbt-exam-browser')
+                ])
             ]);
     }
 
-    public static function table(Table $table): Table
+    public static function table(Table $table): Table   
     {
         return $table
             ->columns([
@@ -70,7 +77,7 @@ class EventResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            BansRelationManager::class,
         ];
     }
 

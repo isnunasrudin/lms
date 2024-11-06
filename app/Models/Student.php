@@ -21,4 +21,9 @@ class Student extends Authenticatable
     {
         return $this->hasMany(Grade::class);
     }
+
+    public function bans()
+    {
+        return $this->hasMany(Ban::class);
+    }
 }

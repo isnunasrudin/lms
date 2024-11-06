@@ -17,6 +17,10 @@ class ExamController extends Controller
 
     public function setActive(Exam $exam, Request $request)
     {
+        if($exam->event->required_seb && !preg_match("/(SEB|cbt-exam-browser)/", $request->userAgent()))
+            return Inertia::render('Student/SebRequired', [
+                'exam' => $exam,
+            ]);
 
         if(!(
             Carbon::now()->between(Carbon::parse("$exam->date $exam->from"), Carbon::parse("$exam->date $exam->until")) &&
@@ -37,7 +41,7 @@ class ExamController extends Controller
                 return $this->finish($request, $exam);
 
             return Inertia::render('Student/Exam', [
-                'exam' => $exam->load('questions'),
+                'exam' => $exam->load(['questions', 'event']),
                 'grade' => $grade,
                 'currentJawabans' => $grade->questions->pluck('pivot.answer', 'id'),
             ]);

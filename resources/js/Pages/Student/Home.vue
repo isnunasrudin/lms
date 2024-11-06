@@ -22,6 +22,11 @@
                                     <Badge severity="secondary" :value="`Durasi ${item.duration} menit`"></Badge>
                                     <Badge severity="secondary" :value="item.from + ' - ' + item.until"></Badge>
                                 </div>
+
+                                <Message v-if="item.event.enable_ban" size="small" class="my-3" severity="warn">
+                                    <b>Hati-Hati !</b> Fitur blokir otomatis diaktifkan.
+                                </Message>
+
                                 <Link :href="`/exam/${item.id}`">
                                     <Button icon="pi pi-play-circle" label="Mulai Ujian" class="w-full block mt-2" :disabled="!item.enable"></Button>
                                 </Link>

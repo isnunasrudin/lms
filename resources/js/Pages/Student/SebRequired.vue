@@ -3,17 +3,13 @@
         <template #header>
             <div class="justify-center flex bg-cover bg-[url('/resources/images/bg.jpg')] px-3 py-5">
                 <div class="mx-5 my-auto text-white">
-                    <p class="font-bold text-3xl">Masukkan Token</p>
+                    <p class="font-bold text-xl">Diperlukan Peramban Khusus</p>
                 </div>
             </div>
         </template>
         <template #content>
 
-            <form class="px-6 py-3" @submit.prevent="form.put('')">
-
-                <Message class="mb-4 text-center" severity="warn" v-if="Object.keys(form.errors)?.length && !form.processing">
-                    {{ form.errors.token }}
-                </Message>
+            <div class="px-6 py-3">
 
                 <Fieldset legend="Info">
                     <div>
@@ -31,18 +27,9 @@
                     </Message>
 
                 </Fieldset>
-
-                <FloatLabel variant="on" class="my-5">
-                    <InputText size="large" :disabled="form.processing" id="on_label" v-model="form.token" autocomplete="off" class="w-full" required />
-                    <label for="on_label">TOKEN</label>
-                </FloatLabel>
-
-                <Button icon="pi pi-play-circle" label="Mulai Ujian" class="w-full block mt-2" :disabled="exam.enable" type="submit" ></Button>
                 
-                <div class="text-right text-xs mt-1" v-if="exam.enable">
-                    Kesempatan: <b>{{ exam.attempt - exam.percobaan }}x</b>
-                </div>
-            </form>
+                <Message class="mt-4" severity="error">Mohon maaf, anda harus menggunakan aplikasi <b>Safe Exam Browser (Windows)</b> atau <b>CBT Exam Browser (Android)</b> untuk mengikuti ujian ini. Jika menurut anda ini kesalahan, hubungi admin ujian.</Message>
+            </div>
 
         </template>
     </Card>
@@ -51,14 +38,10 @@
 <script setup>
 
 import { router, usePage, useForm, Link } from '@inertiajs/vue3'
-import { DataView } from 'primevue';
+import { DataView, Message } from 'primevue';
 
 const props = defineProps({
     exam: Object,
 })
-
-const form = useForm({
-    token: null,
-});
 
 </script>
