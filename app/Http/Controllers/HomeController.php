@@ -12,7 +12,7 @@ class HomeController extends Controller
 {
     public function __invoke()
     {
-        $bans = Auth::guard('student')->user()->bans()->pluck('event_id')->values()->toArray();
+        $bans = Auth::guard('student')->user()->bans()->where('until', '>', Carbon::now())->pluck('event_id')->values()->toArray();
 
         $student = Auth::guard('student')->user();
         $grades = $student->grades()->where('status', 'FINISH')->get()->groupBy('exam_id')->map->count();

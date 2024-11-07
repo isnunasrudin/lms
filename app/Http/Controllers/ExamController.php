@@ -17,10 +17,17 @@ class ExamController extends Controller
 
     public function setActive(Exam $exam, Request $request)
     {
+        $exam->load('event');
+
         if($exam->event->required_seb && !preg_match("/(SEB|cbt-exam-browser)/", $request->userAgent()))
             return Inertia::render('Student/SebRequired', [
                 'exam' => $exam,
             ]);
+
+        if($exam->event->bans()->whereStudentId(Auth::guard('student')->user()->id)->where('until', '>=', Carbon::now())->exists())
+        {
+            return redirect()->route('home');
+        }
 
         if(!(
             Carbon::now()->between(Carbon::parse("$exam->date $exam->from"), Carbon::parse("$exam->date $exam->until")) &&

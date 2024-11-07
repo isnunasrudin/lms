@@ -17,13 +17,21 @@ class BanController extends Controller
             $event = Exam::findOrFail($request->exam_id)->event;
 
             Cache::lock('ban_' . $event->id . '_' . Auth::guard('student')->user()->id, 5)->get(function () use($event, $request)  {
-                $event->bans()->updateOrCreate([
-                    'student_id' => Auth::guard('student')->user()->id
-                ], [
-                    'ip_address' => $request->ip(),
-                    'user_agent' => $request->userAgent(),
-                    'until' => Carbon::now()->addMinutes(10),
-                ]);
+
+                if(!$event->bans()->whereStudentId(Auth::guard('student')->user()->id)->where('until', '>=', Carbon::now())->exists())
+                {
+                    $event->bans()->create([
+                        'student_id' => Auth::guard('student')->user()->id,
+                        'ip_address' => $request->ip(),
+                        'user_agent' => $request->userAgent(),
+                        'until' => Carbon::now()->addMinutes(10),
+                        'description' => match ($request->reason) {
+                            'UNFOCUS' => 'Tidak fokus pada halaman ujian 2x berturut - turut. Indikasi membuka website / aplikasi lain.',
+                            'RESIZE' => 'Ukuran layar berubah saat ujian berlangsung. Indikasi menggunakan split screen.',
+                            default => null
+                        }
+                    ]);
+                }
             });
 
         });

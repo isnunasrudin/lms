@@ -79,7 +79,10 @@ class ExamResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->defaultGroup('date')
+            ->paginated([5,6,10,25,50])
+            ->defaultPaginationPageOption(6);
     }
 
     public static function getRelations(): array

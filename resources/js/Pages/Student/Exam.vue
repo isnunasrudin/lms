@@ -13,7 +13,7 @@
         <template #content>
 
             <Dialog v-model:visible="block_display" modal :closable="false" :draggable="false" header="Anda Tidak Fokus" :style="{ width: '25rem' }" pt:mask:class="backdrop-blur-sm">
-                <span class="text-surface-500 dark:text-surface-400 block">Silahkan kembali ke Ujian. Anda akan diblokir dalam {{ 3 - ufocused_attempt }}x percobaan lagi</span>
+                <span class="text-surface-500 dark:text-surface-400 block">Silahkan kembali ke Ujian. Anda akan diblokir dalam {{ 2 - ufocused_attempt }}x percobaan lagi</span>
             </Dialog>
 
             <Dialog v-model:visible="questionListDialog" modal header="Daftar Pertanyaan" :style="{ width: '25rem' }">
@@ -166,15 +166,21 @@ const ufocused_attempt = ref(0)
 
 const block_display = computed(() => !focused.value && props.exam.event.enable_ban)
 
-async function banMe()
+async function banMe(reason)
 {
-    await axios.post('/ban_me', {
-        exam_id: props.exam.id
-    }, {
-        headers: {
-            'Content-Type': 'multipart/form-data'
-        }
-    })
+    try{
+        await axios.post('/ban_me', {
+            exam_id: props.exam.id,
+            reason
+        }, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+    }catch(e)
+    {
+
+    }
     location.href = "/"
 }
 
@@ -183,19 +189,19 @@ onMounted(() => {
     if(props.exam.event.enable_ban)
     {
         watch(height, async (val) => {
-            await banMe()
+            await banMe("RESIZE")
         })
 
         watch(width, async (val) => {
-            await banMe()
+            await banMe("RESIZE")
         })
 
         watch(focused, async (val) => {
             if(!val)
             {
-                if(ufocused_attempt.value >= 3)
+                if(ufocused_attempt.value >= 2)
                 {
-                    await banMe()   
+                    await banMe("UNFOCUS")   
                 }
                 else
                 {

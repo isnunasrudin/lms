@@ -39,6 +39,7 @@ class StudentResource extends Resource
             ->columns([
                 TextColumn::make('name')->searchable()->sortable(),
                 TextColumn::make('grades_count')->counts('grades')->sortable(),
+                TextColumn::make('bans_count')->counts('bans')->label('Pemblokiran')->sortable(),
                 TextColumn::make('rombel.name')->searchable(),
             ])
             ->filters([
