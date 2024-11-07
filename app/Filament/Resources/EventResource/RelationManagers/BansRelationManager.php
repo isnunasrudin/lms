@@ -30,15 +30,17 @@ class BansRelationManager extends RelationManager
             ->recordTitleAttribute('student.name')
             ->columns([
                 Tables\Columns\TextColumn::make('student.name'),
+                Tables\Columns\TextColumn::make('student.rombel.name'),
+                Tables\Columns\TextColumn::make('until')->since(),
             ])
             ->filters([
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                // Tables\Actions\CreateAction::make(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                // Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([

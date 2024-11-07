@@ -15,7 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(
             append: [HandleInertiaRequests::class]
         );
-        $middleware->validateCsrfTokens(except: ['exam/*']);
+        $middleware->validateCsrfTokens(except: ['exam/*', 'ban_me']);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

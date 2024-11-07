@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Ban;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,13 +12,16 @@ class HomeController extends Controller
 {
     public function __invoke()
     {
+        $bans = Auth::guard('student')->user()->bans()->pluck('event_id')->values()->toArray();
+
         $student = Auth::guard('student')->user();
         $grades = $student->grades()->where('status', 'FINISH')->get()->groupBy('exam_id')->map->count();
 
         $exam = $student->exams()->with('event')->whereHas('event')->get();
 
         return Inertia::render('Student/Home', [
-            'exams' => $exam->map(function ($ujian) use($grades) {
+            'exams' => $exam->map(function ($ujian) use($grades, $bans) {
+                $ujian->banned = in_array($ujian->event_id, $bans);
                 $ujian->percobaan = $grades[$ujian->id] ?? 0;
                 $ujian->enable = (
                     $ujian->percobaan < $ujian->attempt &&

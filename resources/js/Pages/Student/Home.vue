@@ -27,9 +27,12 @@
                                     <b>Hati-Hati !</b> Fitur blokir otomatis diaktifkan.
                                 </Message>
 
-                                <Link :href="`/exam/${item.id}`">
+                                <Link :href="`/exam/${item.id}`" v-if="!item.banned">
                                     <Button icon="pi pi-play-circle" label="Mulai Ujian" class="w-full block mt-2" :disabled="!item.enable"></Button>
                                 </Link>
+
+                                <Button v-else label="Anda di Banned !!!" class="w-full block mt-2 font-bold" disabled severity="danger"></Button>
+
                                 <div class="text-right text-xs mt-1">
                                     Kesempatan: <b>{{ item.attempt - item.percobaan }}x</b>
                                 </div>

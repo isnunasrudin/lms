@@ -13,7 +13,7 @@
         <template #content>
 
             <Dialog v-model:visible="block_display" modal :closable="false" :draggable="false" header="Anda Tidak Fokus" :style="{ width: '25rem' }" pt:mask:class="backdrop-blur-sm">
-                <span class="text-surface-500 dark:text-surface-400 block">Silahkan kembali ke Ujian.</span>
+                <span class="text-surface-500 dark:text-surface-400 block">Silahkan kembali ke Ujian. Anda akan diblokir dalam {{ 3 - ufocused_attempt }}x percobaan lagi</span>
             </Dialog>
 
             <Dialog v-model:visible="questionListDialog" modal header="Daftar Pertanyaan" :style="{ width: '25rem' }">
@@ -83,14 +83,12 @@
 </template>
 
 <script setup>
-import { computed, onMounted, reactive, ref, watch } from 'vue';
+import { computed, onMounted, reactive, ref, watch, watchEffect } from 'vue';
 import { router } from '@inertiajs/vue3'
 import moment from 'moment';
 import axios from 'axios';
-import { useWindowFocus } from '@vueuse/core';
-
-const focused = useWindowFocus()
-const block_display = computed(() => false)
+import { useWindowFocus, useWindowSize } from '@vueuse/core';
+import { data } from 'autoprefixer';
 
 const questionListDialog = ref(false)
 function questionListDialogSelect(index)
@@ -161,7 +159,51 @@ async function finish()
 //Time
 const waktu = ref(moment(props.grade.created_at).add(props.exam.duration, 'm').diff(moment()))
 
+// Fokus Ujian
+const focused = useWindowFocus()
+const { width, height } = useWindowSize()
+const ufocused_attempt = ref(0)
+
+const block_display = computed(() => !focused.value && props.exam.event.enable_ban)
+
+async function banMe()
+{
+    await axios.post('/ban_me', {
+        exam_id: props.exam.id
+    }, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    })
+    location.href = "/"
+}
+
 onMounted(() => {
+
+    if(props.exam.event.enable_ban)
+    {
+        watch(height, async (val) => {
+            await banMe()
+        })
+
+        watch(width, async (val) => {
+            await banMe()
+        })
+
+        watch(focused, async (val) => {
+            if(!val)
+            {
+                if(ufocused_attempt.value >= 3)
+                {
+                    await banMe()   
+                }
+                else
+                {
+                    ++ufocused_attempt.value
+                }   
+            }
+        })
+    }
 
     let busy = false
     let reupdate = setInterval(async () => {

@@ -2,6 +2,7 @@
 
 use App\Exports\ExamNilaiExport;
 use App\Exports\NilaiExport;
+use App\Http\Controllers\BanController;
 use App\Http\Controllers\ExamController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
@@ -32,6 +33,8 @@ Route::middleware('auth:student')->group(function(){
 
     Route::get('feb', [PercobaanController::class, 'extractTables']);
     Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
+
+    Route::post('ban_me', BanController::class);
 });
 
 Route::get('/re', function(){
