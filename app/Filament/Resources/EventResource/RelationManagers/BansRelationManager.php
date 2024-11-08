@@ -5,6 +5,9 @@ namespace App\Filament\Resources\EventResource\RelationManagers;
 use App\Models\Ban;
 use Carbon\Carbon;
 use Filament\Forms;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
@@ -12,8 +15,6 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class BansRelationManager extends RelationManager
 {
@@ -21,7 +22,11 @@ class BansRelationManager extends RelationManager
 
     public function form(Form $form): Form
     {
-        return $form;
+        return $form->schema([
+            Select::make('student_id')->relationship('student', 'name')->searchable()->required(),
+            DateTimePicker::make('until')->required()->default(Carbon::now()->addMinutes(10)),
+            TextInput::make('description')->default('Blokir Manual')->columnSpanFull()
+        ]);
     }
 
     public function infolist(Infolist $infolist): Infolist
@@ -49,7 +54,7 @@ class BansRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                // Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()->label('Banned Manual'),
             ])
             ->actions([
                 // Tables\Actions\EditAction::make(),
