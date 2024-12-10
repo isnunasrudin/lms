@@ -13,7 +13,7 @@
         <template #content>
 
             <Dialog v-model:visible="block_display" modal :closable="false" :draggable="false" header="Anda Tidak Fokus" :style="{ width: '25rem' }" pt:mask:class="backdrop-blur-sm">
-                <span class="text-surface-500 dark:text-surface-400 block">Silahkan kembali ke Ujian. Anda akan diblokir dalam {{ 2 - ufocused_attempt }}x percobaan lagi</span>
+                <span class="text-surface-500 dark:text-surface-400 block">Silahkan kembali ke Ujian. Anda akan diblokir dalam {{ 1 - ufocused_attempt }}x percobaan lagi</span>
             </Dialog>
 
             <Dialog v-model:visible="questionListDialog" modal header="Daftar Pertanyaan" :style="{ width: '25rem' }">
@@ -188,27 +188,31 @@ onMounted(() => {
 
     if(props.exam.event.enable_ban)
     {
-        watch(height, async (val) => {
-            await banMe("RESIZE")
-        })
 
-        watch(width, async (val) => {
-            await banMe("RESIZE")
-        })
+        setTimeout(() => {
 
-        watch(focused, async (val) => {
-            if(!val)
-            {
-                if(ufocused_attempt.value >= 2)
+            watch(height, async (val) => {
+                await banMe("RESIZE")
+            })
+
+            watch(width, async (val) => {
+                await banMe("RESIZE")
+            })
+
+            watch(focused, async (val) => {
+                if(!val)
                 {
-                    await banMe("UNFOCUS")   
+                    if(ufocused_attempt.value >= 0)
+                    {
+                        await banMe("UNFOCUS")   
+                    }
+                    else
+                    {
+                        ++ufocused_attempt.value
+                    }   
                 }
-                else
-                {
-                    ++ufocused_attempt.value
-                }   
-            }
-        })
+            })
+        }, 2000)
     }
 
     let busy = false
